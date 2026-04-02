@@ -1,0 +1,68 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Stage 1: Unit tests ──────────────────────────────────────────────────────
+  test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CPU-only PyTorch
+        run: |
+          pip install torch torchvision \
+            --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install project dependencies
+        run: |
+          pip install Flask==3.1.3 waitress==3.0.2 python-dotenv==1.0.1 \
+            "Pillow>=10.0.0" "numpy>=1.24.0" pytest>=8.0.0
+
+      - name: Run tests
+        working-directory: lab2
+        run: pytest test_api.py -v
+
+  # ── Stage 2: Build & push Docker image (main branch only) ───────────────────
+  build-and-push:
+    name: Build and push Docker image
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Weights must exist for the Docker build (COPY weights/ weights/)
+      # In a real pipeline you'd download them from an artifact store.
+      # Here we create an empty placeholder so the build doesn't fail.
+      - name: Create placeholder weights dir
+        run: mkdir -p lab2/weights
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./lab2
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/segmentation-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/segmentation-service:${{ github.sha }}

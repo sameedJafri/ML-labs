@@ -1,0 +1,13 @@
+.env
+.venv
+.git
+.gitignore
+__pycache__
+*.pyc
+data/
+outputs/
+sam_vit_h_4b8939.pth
+prepare_dataset.py
+train.py
+test_api.py
+.pytest_cache

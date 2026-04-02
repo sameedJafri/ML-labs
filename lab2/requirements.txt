@@ -1,0 +1,20 @@
+# ── Serving (goes into Docker) ────────────────────────────────────────────────
+Flask==3.1.3
+waitress==3.0.2
+python-dotenv==1.0.1
+Pillow>=10.0.0
+numpy>=1.24.0
+torchvision>=0.15.0   # torch installed separately via CPU wheel (see Dockerfile)
+
+# ── Training & evaluation ─────────────────────────────────────────────────────
+matplotlib>=3.7.0
+
+# ── Dataset download ──────────────────────────────────────────────────────────
+datasets>=2.18.0
+huggingface_hub>=0.20.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=8.0.0
+
+# NOTE: SAM must be installed separately (not on PyPI):
+#   pip install git+https://github.com/facebookresearch/segment-anything.git
