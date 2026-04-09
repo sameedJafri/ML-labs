@@ -48,7 +48,7 @@ IMG_TRANSFORM = transforms.Compose([
 # ── Model helpers ─────────────────────────────────────────────────────────────
 
 def _build_model_arch() -> nn.Module:
-    model = deeplabv3_resnet50(weights=None)
+    model = deeplabv3_resnet50(weights=None, aux_loss=True)
     model.classifier[4]     = nn.Conv2d(256, 2, kernel_size=1)
     model.aux_classifier[4] = nn.Conv2d(256, 2, kernel_size=1)
     return model

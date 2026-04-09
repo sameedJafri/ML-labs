@@ -10,7 +10,7 @@ torchvision>=0.15.0   # torch installed separately via CPU wheel (see Dockerfile
 matplotlib>=3.7.0
 
 # ── Dataset download ──────────────────────────────────────────────────────────
-datasets>=2.18.0
+datasets>=2.18.0,<3.0.0
 huggingface_hub>=0.20.0
 
 # ── Testing ───────────────────────────────────────────────────────────────────
