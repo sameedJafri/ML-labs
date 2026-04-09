@@ -9,14 +9,15 @@ Endpoints:
 """
 
 import os
-from flask import Flask, request, jsonify
-from transformers import pipeline
-from waitress import serve
-from dotenv import load_dotenv
 
 # Prevent PyTorch/MKL deadlocks before loading transformers
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
+
+from flask import Flask, request, jsonify
+from transformers import pipeline
+from waitress import serve
+from dotenv import load_dotenv
 
 load_dotenv()
 
